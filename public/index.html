@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MathEdu Studio | Chuyên trang Toán học THPT, LaTeX & AI Giáo dục</title>
+  <meta name="description" content="Website cá nhân Giáo viên Toán học THPT: Hệ thống chuyên đề Toán 10-11-12, kho đề thi cấu trúc mới, công cụ vẽ đồ thị, LaTeX ex_test và ứng dụng Gemini AI." />
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS (CDN phiên bản cố định) -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+  <!-- KaTeX hiển thị công thức Toán học tốc độ cao -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Chart.js vẽ đồ thị hàm số -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Stylesheet dự án -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- Vùng hiển thị thông báo Toast -->
+  <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 max-w-sm"></div>
+
+  <!-- ========================================================================
+       THANH ĐIỀU HƯỚNG CỐ ĐỊNH (STICKY HEADER & HASH NAVIGATION)
+       ======================================================================== -->
+  <header id="main-sticky-navbar" class="sticky-navbar">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      <!-- Logo & Tên Website -->
+      <a href="#trang-chu" class="flex items-center gap-3 group shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-700 via-blue-600 to-cyan-500 text-white flex items-center justify-center shadow-md font-extrabold text-lg tracking-tighter group-hover:scale-105 transition">
+          ∫π
+        </div>
+        <div>
+          <span id="brand-site-name" class="block font-extrabold text-base sm:text-lg text-slate-900 tracking-tight leading-none">MathEdu Studio</span>
+          <span id="brand-site-tagline" class="hidden sm:block text-[11px] font-medium text-slate-500 mt-0.5">Toán học THPT • LaTeX • AI Giáo dục</span>
+        </div>
+      </a>
+
+      <!-- Menu điều hướng trên máy tính (Desktop Navigation) -->
+      <nav aria-label="Điều hướng chính" class="hidden lg:flex items-center gap-1">
+        <a href="#trang-chu" class="nav-item-link active">Trang chủ</a>
+        <a href="#gioi-thieu" class="nav-item-link">Giới thiệu</a>
+        <a href="#toan-hoc" class="nav-item-link">Toán học</a>
+        <a href="#tai-lieu" class="nav-item-link">Tài liệu & Đề thi</a>
+        <a href="#cong-cu" class="nav-item-link">Công cụ Toán</a>
+        <a href="#latex" class="nav-item-link">LaTeX & ex_test</a>
+        <a href="#cong-nghe" class="nav-item-link">Công nghệ & AI</a>
+        <a href="#lien-he" class="nav-item-link">Liên hệ</a>
+      </nav>
+
+      <!-- Nút hành động nhanh & Nút mở Menu trên điện thoại -->
+      <div class="flex items-center gap-2">
+        <a href="#tai-lieu" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold shadow-sm transition">
+          <span>Kho Đề 2026</span>
+          <span>→</span>
+        </a>
+        <button type="button" id="mobile-menu-toggle" aria-label="Mở menu điều hướng" class="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu thu gọn trên điện thoại (Mobile Navigation Drawer) -->
+    <div id="mobile-nav-drawer" class="hidden lg:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 shadow-lg">
+      <div class="grid grid-cols-2 gap-1.5">
+        <a href="#trang-chu" class="nav-item-link">🏠 Trang chủ</a>
+        <a href="#gioi-thieu" class="nav-item-link">👨‍🏫 Giới thiệu</a>
+        <a href="#toan-hoc" class="nav-item-link">📐 Khu vực Toán học</a>
+        <a href="#tai-lieu" class="nav-item-link">📚 Đề thi & Tài liệu</a>
+        <a href="#cong-cu" class="nav-item-link">📈 Công cụ Toán học</a>
+        <a href="#latex" class="nav-item-link">📝 LaTeX & LuaLaTeX</a>
+        <a href="#cong-nghe" class="nav-item-link">🤖 Công nghệ & AI</a>
+        <a href="#lien-he" class="nav-item-link">✉️ Liên hệ & Quản trị</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-16">
+    <!-- ======================================================================
+         A. KHU VỰC TRANG CHỦ (#trang-chu) - BANNER NỔI BẬT & TỔNG QUAN
+         ====================================================================== -->
+    <section id="trang-chu" class="hero-banner text-white py-12 sm:py-16 lg:py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          <!-- Cột nội dung giới thiệu website -->
+          <div class="lg:col-span-7 space-y-5">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-xs font-semibold text-cyan-300">
+              <span>✦</span>
+              <span id="hero-badge-text">Hệ sinh thái Học tập & Giảng dạy Toán THPT 2026</span>
+            </div>
+
+            <h1 id="hero-title-text" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+              Khơi nguồn Tư duy Toán học & Công nghệ Giáo dục Hiện đại
+            </h1>
+
+            <p id="hero-subtitle-text" class="text-sm sm:text-base text-blue-100/90 leading-relaxed max-w-2xl">
+              Kho học liệu số chuẩn chương trình GDPT 2018, hệ thống đề thi cấu trúc mới, công cụ vẽ đồ thị trực quan, tiện ích soạn thảo LaTeX ex_test và trợ lý AI dành cho giáo viên & học sinh THPT.
+            </p>
+
+            <!-- Công thức Toán học trang trí trực quan bằng KaTeX -->
+            <div class="p-3.5 rounded-xl bg-slate-900/50 border border-white/15 backdrop-blur-sm inline-block max-w-full overflow-x-auto">
+              <div class="text-[11px] uppercase tracking-wider text-cyan-300 font-semibold mb-1">Biểu thức Giải tích & Xác suất tiêu biểu:</div>
+              <div class="text-xs sm:text-sm text-white">
+                $$e^{i\pi} + 1 = 0 \quad \Big| \quad \int_{-\infty}^{+\infty} e^{-x^2}\,\mathrm{d}x = \sqrt{\pi} \quad \Big| \quad P(B|A) = \frac{P(B)P(A|B)}{P(A)}$$
+              </div>
+            </div>
+
+            <!-- Các nút điều hướng nhanh -->
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <a href="#toan-hoc" class="px-5 py-2.5 rounded-xl bg-white text-blue-900 hover:bg-blue-50 font-bold text-xs sm:text-sm shadow-lg transition inline-flex items-center gap-2">
+                <span>Khám phá Chuyên đề Toán</span>
+                <span>→</span>
+              </a>
+              <a href="#cong-cu" class="px-4 py-2.5 rounded-xl bg-blue-600/40 hover:bg-blue-600/60 border border-white/25 text-white font-semibold text-xs sm:text-sm transition">
+                Mở Công cụ Vẽ đồ thị & Tính toán
+              </a>
+              <a href="#latex" class="px-4 py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-300/30 text-cyan-200 font-semibold text-xs sm:text-sm transition">
+                Trình tạo câu hỏi ex_test
+              </a>
+            </div>
+
+            <!-- Thống kê nổi bật -->
+            <div class="grid grid-cols-3 gap-3 pt-4 border-t border-white/15 max-w-lg">
+              <div>
+                <div id="stat-topics-count" class="text-lg sm:text-xl font-extrabold text-white">7 Chuyên đề</div>
+                <div class="text-xs text-blue-200">Đại số, Giải tích, Hình, XS-TK</div>
+              </div>
+              <div>
+                <div id="stat-docs-count" class="text-lg sm:text-xl font-extrabold text-cyan-300">7 Đề & Tài liệu</div>
+                <div class="text-xs text-blue-200">PDF chuẩn cấu trúc 2026</div>
+              </div>
+              <div>
+                <div class="text-lg sm:text-xl font-extrabold text-amber-300">5+ Tiện ích</div>
+                <div class="text-xs text-blue-200">Đồ thị, KaTeX, LaTeX, AI</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cột hình ảnh minh họa Banner -->
+          <div class="lg:col-span-5">
+            <div class="hero-image-frame bg-slate-900/60">
+              <img src="assets/images/hero-banner.jpg" alt="Minh họa Không gian Toán học và Công nghệ Giáo dục" class="w-full h-auto object-cover block" />
+              <div class="p-4 bg-slate-950/85 border-t border-white/10 flex items-center justify-between text-xs">
+                <span class="text-blue-200 font-medium">⚡ Triển khai trên Cloudflare Workers Static Assets</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold">KaTeX Ready</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CÁC DANH MỤC NỘI DUNG NỔI BẬT & CÔNG CỤ SỬ DỤNG NHIỀU + TIN TỨC MỚI -->
+    <section class="py-12 bg-white border-b border-slate-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <!-- 4 Thẻ danh mục nổi bật trên trang chủ -->
+        <div>
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Cấu trúc học tập toàn diện</span>
+              <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5">Các danh mục nội dung & công cụ được sử dụng nhiều</h2>
+            </div>
+            <span class="text-xs text-slate-500">Chọn danh mục bất kỳ để di chuyển nhanh đến khu vực chức năng</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <a href="#toan-hoc" class="math-card p-5 block group">
+              <div class="w-11 h-11 rounded-xl bg-blue-100 text-blue-700 font-extrabold flex items-center justify-center text-lg mb-3 group-hover:bg-blue-700 group-hover:text-white transition">
+                ∫
+              </div>
+              <h3 class="font-bold text-slate-900 text-base mb-1">Chuyên đề Toán THPT</h3>
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">Hệ thống lý thuyết, công thức cốt lõi và ví dụ minh họa cho Đại số, Hàm số, Đạo hàm, Tích phân, Oxyz và Xác suất.</p>
+              <span class="text-xs font-semibold text-blue-700">Xem 7 phân môn →</span>
+            </a>
+
+            <a href="#tai-lieu" class="math-card p-5 block group">
+              <div class="w-11 h-11 rounded-xl bg-cyan-100 text-cyan-800 font-extrabold flex items-center justify-center text-lg mb-3 group-hover:bg-cyan-600 group-hover:text-white transition">
+                PDF
+              </div>
+              <h3 class="font-bold text-slate-900 text-base mb-1">Kho Đề thi & Tài liệu</h3>
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">Tìm kiếm, lọc theo khối lớp (10, 11, 12), mức độ nhận thức, xem hướng dẫn giải và tải file PDF trực tiếp.</p>
+              <span class="text-xs font-semibold text-cyan-700">Mở thư viện đề thi →</span>
+            </a>
+
+            <a href="#cong-cu" class="math-card p-5 block group">
+              <div class="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-800 font-extrabold flex items-center justify-center text-lg mb-3 group-hover:bg-emerald-600 group-hover:text-white transition">
+                ƒ(x)
+              </div>
+              <h3 class="font-bold text-slate-900 text-base mb-1">Công cụ Toán Tương tác</h3>
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">Vẽ đồ thị hàm số bậc 3 & đạo hàm, giải phương trình, tính thống kê mẫu số liệu, gõ thử công thức KaTeX trực tiếp.</p>
+              <span class="text-xs font-semibold text-emerald-700">Sử dụng công cụ →</span>
+            </a>
+
+            <a href="#latex" class="math-card p-5 block group">
+              <div class="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 font-extrabold flex items-center justify-center text-lg mb-3 group-hover:bg-amber-600 group-hover:text-white transition">
+                TeX
+              </div>
+              <h3 class="font-bold text-slate-900 text-base mb-1">LaTeX ex_test & Gemini AI</h3>
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">Sinh mã nguồn câu hỏi trắc nghiệm 4 lựa chọn, Đúng/Sai, Trả lời ngắn và kho Prompt AI dành riêng cho giáo viên Toán.</p>
+              <span class="text-xs font-semibold text-amber-700">Mở trình tạo mã →</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Tin tức và Nội dung mới cập nhật -->
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-5">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Bản tin học thuật</span>
+              <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5">Tin tức & Nội dung mới cập nhật</h2>
+            </div>
+            <a href="#tai-lieu" class="text-xs font-semibold text-blue-700 hover:underline">Xem toàn bộ học liệu →</a>
+          </div>
+          <div id="news-updates-grid" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         GIỚI THIỆU GIÁO VIÊN & MÔ HÌNH WEBSITE (#gioi-thieu)
+         ====================================================================== -->
+    <section id="gioi-thieu" class="py-14 bg-slate-50 border-b border-slate-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          <!-- Thẻ hồ sơ Giáo viên -->
+          <div class="lg:col-span-5 math-card p-6 sm:p-8 bg-gradient-to-b from-blue-900 to-slate-900 text-white flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-4 mb-5">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-400 to-blue-500 text-slate-950 font-extrabold text-2xl flex items-center justify-center shadow-lg shrink-0">
+                  MK
+                </div>
+                <div>
+                  <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-400/20 text-cyan-300 border border-cyan-400/30">Hồ sơ Giáo viên</span>
+                  <h2 id="teacher-name-text" class="text-xl sm:text-2xl font-extrabold text-white mt-1">Thầy Nguyễn Minh Khoa, ThS.</h2>
+                  <p id="teacher-role-text" class="text-xs text-blue-200">Giáo viên Toán THPT Chuyên • Chuyên gia LaTeX & EdTech</p>
+                </div>
+              </div>
+
+              <p id="teacher-bio-text" class="text-sm text-blue-100/90 leading-relaxed mb-5">
+                Tốt nghiệp Thạc sĩ Phương pháp Toán sơ cấp, đam mê ứng dụng lập trình mã nguồn mở, hệ thống chế bản tài liệu LaTeX/LuaLaTeX và Trí tuệ nhân tạo (Gemini AI) nhằm tối ưu hóa việc dạy và học Toán học ở bậc Trung học Phổ thông.
+              </p>
+
+              <blockquote id="teacher-philosophy-text" class="p-4 rounded-xl bg-white/10 border-l-4 border-cyan-400 text-xs sm:text-sm italic text-blue-50 mb-5">
+                “Toán học không chỉ là những con số hay công thức khô khan, mà là nghệ thuật rèn luyện tư duy logic, khả năng mô hình hóa và giải quyết vấn đề thực tiễn.”
+              </blockquote>
+            </div>
+
+            <div class="pt-4 border-t border-white/15 space-y-2 text-xs text-blue-200">
+              <div class="flex items-center justify-between">
+                <span>Kinh nghiệm giảng dạy:</span>
+                <strong id="teacher-exp-text" class="text-white">12+ năm bồi dưỡng HSG & luyện thi THPT</strong>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>Đơn vị công tác:</span>
+                <strong class="text-cyan-300">Tổ Toán - Tin THPT Chuyên</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Giới thiệu định hướng chuyên môn & Kết nối ứng dụng ngoài -->
+          <div class="lg:col-span-7 flex flex-col justify-between space-y-6">
+            <div class="math-card p-6 sm:p-7">
+              <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Sứ mệnh & Phương pháp sư phạm</span>
+              <h3 class="text-xl font-extrabold text-slate-900 mt-1 mb-3">Kết hợp Toán học Chuẩn mực với Công nghệ Hiện đại</h3>
+              <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                Website được thiết kế theo kiến trúc tĩnh tốc độ cao trên nền tảng <strong>Cloudflare Workers Static Assets</strong>, giúp học sinh truy cập tài liệu, tra cứu công thức và thực hành vẽ đồ thị tức thì trên cả máy tính lẫn điện thoại mà không bị gián đoạn.
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="p-3.5 rounded-xl bg-blue-50/70 border border-blue-100">
+                  <div class="font-bold text-blue-900 text-sm mb-1">1. Trực quan hóa</div>
+                  <p class="text-xs text-slate-600">Biểu diễn hàm số, đạo hàm, tích phân và hình học Oxyz bằng đồ thị tương tác.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-100">
+                  <div class="font-bold text-emerald-900 text-sm mb-1">2. Chuẩn hóa Đề thi</div>
+                  <p class="text-xs text-slate-600">100% tài liệu biên soạn bằng LaTeX / LuaLaTeX gói <code>ex_test</code> sắc nét.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-amber-50/70 border border-amber-100">
+                  <div class="font-bold text-amber-900 text-sm mb-1">3. Tích hợp AI</div>
+                  <p class="text-xs text-slate-600">Ứng dụng Gemini AI hỗ trợ cá nhân hóa lộ trình ôn tập và giải đáp thắc mắc.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Danh sách liên kết đến các ứng dụng bên ngoài -->
+            <div class="math-card p-6">
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <h4 class="font-bold text-slate-900 text-sm sm:text-base">Liên kết Hệ sinh thái Ứng dụng Toán học Bên ngoài</h4>
+                <span class="text-xs text-slate-500">Có thể thêm mới ở phần Quản trị</span>
+              </div>
+              <div id="external-apps-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         B. KHU VỰC TOÁN HỌC (#toan-hoc) - 7 CHỦ ĐỀ TRỌNG TÂM THPT
+         ====================================================================== -->
+    <section id="toan-hoc" class="py-14 bg-white border-b border-slate-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Khu vực B • Kiến thức Cốt lõi</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Hệ thống Chuyên đề Toán học THPT</h2>
+            <p class="text-sm text-slate-600 mt-1">Bao gồm đầy đủ Đại số, Hàm số, Đạo hàm, Tích phân, Hình học, Xác suất - Thống kê và Chuyên đề học tập THPT.</p>
+          </div>
+          <!-- Thanh lọc nhanh theo phân môn -->
+          <div id="math-topic-pills" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <!-- Lưới hiển thị các thẻ chuyên đề Toán học -->
+        <div id="math-topics-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         C. KHU VỰC ĐỀ THI & TÀI LIỆU (#tai-lieu) - TÌM KIẾM, LỌC & TẢI PDF
+         ====================================================================== -->
+    <section id="tai-lieu" class="py-14 bg-slate-50 border-b border-slate-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Khu vực C • Kho Học liệu Số</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Đề thi, Đề kiểm tra & Tài liệu Học tập</h2>
+            <p class="text-sm text-slate-600 mt-1">Phân loại khoa học theo Khối lớp (10, 11, 12), Danh mục và Mức độ nhận thức kèm hướng dẫn giải chi tiết.</p>
+          </div>
+          <div id="doc-result-count" class="text-xs font-bold text-blue-800 bg-blue-100 px-3.5 py-1.5 rounded-full self-start md:self-auto">
+            Hiển thị 7 tài liệu
+          </div>
+        </div>
+
+        <!-- Bộ công cụ Tìm kiếm và Lọc tài liệu -->
+        <div class="math-card p-4 sm:p-5 mb-6 bg-white">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
+            <div class="lg:col-span-4">
+              <label for="doc-search-input" class="block text-xs font-bold text-slate-700 mb-1">Tìm kiếm theo tên đề, chủ đề, từ khóa</label>
+              <input id="doc-search-input" type="text" placeholder="VD: Tốt nghiệp 2026, hàm số, tích phân, Bayes..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            </div>
+
+            <div class="lg:col-span-2">
+              <label for="doc-grade-filter" class="block text-xs font-bold text-slate-700 mb-1">Khối lớp</label>
+              <select id="doc-grade-filter" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="all">Tất cả các lớp</option>
+                <option value="12">Toán Lớp 12</option>
+                <option value="11">Toán Lớp 11</option>
+                <option value="10">Toán Lớp 10</option>
+              </select>
+            </div>
+
+            <div class="lg:col-span-3">
+              <label for="doc-category-filter" class="block text-xs font-bold text-slate-700 mb-1">Danh mục học liệu</label>
+              <select id="doc-category-filter" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="all">Tất cả danh mục</option>
+                <option value="Đề thi">Đề thi thử THPT</option>
+                <option value="Đề kiểm tra">Đề kiểm tra định kỳ</option>
+                <option value="Tài liệu học tập">Tài liệu học tập & Chuyên đề</option>
+                <option value="Đáp án & Hướng dẫn">Đáp án & Sổ tay công thức</option>
+              </select>
+            </div>
+
+            <div class="lg:col-span-2">
+              <label for="doc-level-filter" class="block text-xs font-bold text-slate-700 mb-1">Mức độ</label>
+              <select id="doc-level-filter" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="all">Mọi mức độ</option>
+                <option value="Cơ bản">Cơ bản</option>
+                <option value="Thông hiểu">Thông hiểu</option>
+                <option value="Vận dụng">Vận dụng</option>
+                <option value="Vận dụng cao">Vận dụng cao</option>
+              </select>
+            </div>
+
+            <div class="lg:col-span-1">
+              <button type="button" id="doc-reset-filter-btn" class="w-full px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+                Đặt lại
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danh sách thẻ tài liệu -->
+        <div id="documents-list-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         D. KHU VỰC CÔNG CỤ TOÁN HỌC (#cong-cu) - ĐỒ THỊ, TÍNH TOÁN, KATEX
+         ====================================================================== -->
+    <section id="cong-cu" class="py-14 bg-white border-b border-slate-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Khu vực D • Phòng thí nghiệm Toán học số</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Công cụ Tính toán, Vẽ Đồ thị & Tiện ích Giáo viên</h2>
+          <p class="text-sm text-slate-600 mt-1">Thực hành khảo sát hàm số trực tiếp, tính toán đại số - thống kê, kiểm tra mã công thức KaTeX và quản lý lớp học.</p>
+        </div>
+
+        <!-- Hàng 1: Vẽ đồ thị hàm số & Khảo sát đạo hàm -->
+        <div class="math-card p-6">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-4 mb-5 border-b border-slate-100">
+            <div>
+              <h3 class="text-lg font-extrabold text-slate-900">1. Công cụ Vẽ Đồ thị Hàm số & Đạo hàm $y = ax^3 + bx^2 + cx + d$</h3>
+              <p class="text-xs text-slate-600">Tự động tìm cực đại, cực tiểu, điểm uốn (tâm đối xứng) và vẽ đồng thời đồ thị $f(x)$ cùng đạo hàm $f'(x)$.</p>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" data-preset-func="1,0,-3,1" class="px-3 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-semibold transition">Mẫu bậc 3: $x^3 - 3x + 1$</button>
+              <button type="button" data-preset-func="-1,3,0,-2" class="px-3 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-semibold transition">Mẫu bậc 3: $-x^3 + 3x^2 - 2$</button>
+              <button type="button" data-preset-func="0,1,-2,-3" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold transition">Parabol: $x^2 - 2x - 3$</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-4 space-y-4">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="coef-a" class="block text-xs font-bold text-slate-700 mb-1">Hệ số $a$ ($x^3$)</label>
+                  <input id="coef-a" type="number" step="0.5" value="1" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label for="coef-b" class="block text-xs font-bold text-slate-700 mb-1">Hệ số $b$ ($x^2$)</label>
+                  <input id="coef-b" type="number" step="0.5" value="0" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label for="coef-c" class="block text-xs font-bold text-slate-700 mb-1">Hệ số $c$ ($x$)</label>
+                  <input id="coef-c" type="number" step="0.5" value="-3" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label for="coef-d" class="block text-xs font-bold text-slate-700 mb-1">Hệ số tự do $d$</label>
+                  <input id="coef-d" type="number" step="0.5" value="1" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label for="graph-xmin" class="block text-xs font-bold text-slate-700 mb-1">Miền $x_{\min}$</label>
+                  <input id="graph-xmin" type="number" step="1" value="-3.5" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+                </div>
+                <div>
+                  <label for="graph-xmax" class="block text-xs font-bold text-slate-700 mb-1">Miền $x_{\max}$</label>
+                  <input id="graph-xmax" type="number" step="1" value="3.5" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+                </div>
+              </div>
+
+              <button type="button" id="btn-plot-graph" class="w-full py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm font-bold shadow-sm transition">
+                Cập nhật Đồ thị & Khảo sát Hàm số
+              </button>
+
+              <div id="graph-analysis-output" class="p-4 rounded-xl bg-slate-50 border border-slate-200"></div>
+            </div>
+
+            <div class="lg:col-span-8">
+              <div class="relative h-72 sm:h-80 w-full bg-white p-3 rounded-xl border border-slate-200">
+                <canvas id="mathGraphCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hàng 2: 4 Công cụ Toán học & Tiện ích Giáo viên -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Công cụ 2: Giải phương trình bậc hai & Định lý Vi-ét -->
+          <div class="math-card p-6 space-y-4">
+            <h3 class="text-base font-extrabold text-slate-900">2. Công cụ Tính toán Phương trình Bậc hai & Hệ thức Vi-ét</h3>
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label for="quad-a" class="block text-xs font-bold text-slate-700 mb-1">Hệ số $a$</label>
+                <input id="quad-a" type="number" step="any" value="1" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+              </div>
+              <div>
+                <label for="quad-b" class="block text-xs font-bold text-slate-700 mb-1">Hệ số $b$</label>
+                <input id="quad-b" type="number" step="any" value="-5" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+              </div>
+              <div>
+                <label for="quad-c" class="block text-xs font-bold text-slate-700 mb-1">Hệ số $c$</label>
+                <input id="quad-c" type="number" step="any" value="6" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+              </div>
+            </div>
+            <button type="button" id="btn-solve-quad" class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition">
+              Giải phương trình $ax^2 + bx + c = 0$
+            </button>
+            <div id="quad-result-box" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200"></div>
+          </div>
+
+          <!-- Công cụ 3: Tổ hợp C(n,k), Chỉnh hợp A(n,k) & Thống kê mẫu số liệu -->
+          <div class="math-card p-6 space-y-4">
+            <h3 class="text-base font-extrabold text-slate-900">3. Công cụ Tổ hợp $C_n^k, A_n^k$ & Thống kê Mẫu số liệu</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div>
+                <label for="comb-n" class="block text-xs font-bold text-slate-700 mb-1">Số phần tử $n$</label>
+                <input id="comb-n" type="number" value="10" min="0" max="30" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+              </div>
+              <div>
+                <label for="comb-k" class="block text-xs font-bold text-slate-700 mb-1">Chập $k$</label>
+                <input id="comb-k" type="number" value="3" min="0" max="30" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+              </div>
+              <div class="col-span-2">
+                <label for="stats-series-input" class="block text-xs font-bold text-slate-700 mb-1">Dãy số liệu thống kê (cách nhau dấu phẩy)</label>
+                <input id="stats-series-input" type="text" value="6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+              </div>
+            </div>
+            <button type="button" id="btn-calc-stats" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition">
+              Tính Tổ hợp & Số đặc trưng thống kê
+            </button>
+            <div id="stats-comb-result" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200"></div>
+          </div>
+
+          <!-- Công cụ 4: Hiển thị Công thức Toán học trực tiếp (KaTeX Sandbox) -->
+          <div class="math-card p-6 space-y-4">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="text-base font-extrabold text-slate-900">4. Trình hiển thị Công thức Toán học (KaTeX Live)</h3>
+              <div class="flex gap-1">
+                <button type="button" data-katex-sample="\int_{0}^{\frac{\pi}{2}} \sin^2 x\,\mathrm{d}x = \frac{\pi}{4}" class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-[11px] font-semibold">Tích phân</button>
+                <button type="button" data-katex-sample="\lim_{x \to +\infty} \frac{2x^2 + 3x - 1}{x^2 - 4} = 2" class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-[11px] font-semibold">Giới hạn</button>
+                <button type="button" data-katex-sample="d(M, (P)) = \frac{|Ax_0 + By_0 + Cz_0 + D|}{\sqrt{A^2 + B^2 + C^2}}" class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-[11px] font-semibold">Hình Oxyz</button>
+              </div>
+            </div>
+            <textarea id="katex-live-input" rows="2" class="w-full p-3 rounded-xl border border-slate-300 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-600">\int_{0}^{\frac{\pi}{2}} \sin^2 x\,\mathrm{d}x = \frac{\pi}{4}, \quad \sum_{k=1}^{n} k^2 = \frac{n(n+1)(2n+1)}{6}</textarea>
+            <div class="p-4 rounded-xl bg-blue-50/60 border border-blue-200 min-h-[76px] flex items-center justify-center overflow-x-auto">
+              <div id="katex-live-output" class="text-slate-900"></div>
+            </div>
+          </div>
+
+          <!-- Công cụ 5: Tiện ích Hỗ trợ Giáo viên trên lớp -->
+          <div class="math-card p-6 space-y-4">
+            <h3 class="text-base font-extrabold text-slate-900">5. Tiện ích Giáo viên: Gọi tên Ngẫu nhiên & Chia nhóm / Mã đề</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="sm:col-span-2">
+                <label for="teacher-student-list" class="block text-xs font-bold text-slate-700 mb-1">Danh sách học sinh / Chủ đề thảo luận (mỗi dòng 1 tên)</label>
+                <textarea id="teacher-student-list" rows="3" class="w-full p-2.5 rounded-xl border border-slate-300 text-xs">Nguyễn Hải Đăng
+Trần Minh Ánh
+Lê Hoàng Nam
+Phạm Thu Hà
+Vũ Đức Anh
+Đặng Khánh Linh</textarea>
+              </div>
+              <div class="space-y-2">
+                <label for="teacher-group-count" class="block text-xs font-bold text-slate-700">Số nhóm / Tổ</label>
+                <input id="teacher-group-count" type="number" value="3" min="1" max="10" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm" />
+                <button type="button" id="btn-run-teacher-util" class="w-full py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition">
+                  🎲 Trộn & Chọn ngay
+                </button>
+              </div>
+            </div>
+            <div id="teacher-utility-output"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         E. KHU VỰC LATEX & LUALATEX (#latex) - TRÌNH TẠO EX_TEST & MẪU MÃ NGUỒN
+         ====================================================================== -->
+    <section id="latex" class="py-14 bg-slate-50 border-b border-slate-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Khu vực E • Chế bản Tài liệu Toán học</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Chuyên mục LaTeX, LuaLaTeX & Công cụ Tạo câu hỏi <code>ex_test</code></h2>
+          <p class="text-sm text-slate-600 mt-1">Hướng dẫn sử dụng LaTeX, kho mẫu mã nguồn chuẩn cấu trúc đề thi mới và công cụ sinh mã <code>ex_test</code> tự động.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Form tạo câu hỏi theo cấu trúc ex_test -->
+          <div class="lg:col-span-6 math-card p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 class="text-base font-extrabold text-slate-900">Công cụ Tạo câu hỏi chuẩn gói <code>ex_test</code></h3>
+              <span class="px-2.5 py-0.5 rounded bg-blue-100 text-blue-800 text-xs font-bold">Chuẩn 2026</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="extest-qtype" class="block text-xs font-bold text-slate-700 mb-1">Loại câu hỏi trong đề thi</label>
+                <select id="extest-qtype" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
+                  <option value="choice">Phần I: Trắc nghiệm 4 lựa chọn (\choice)</option>
+                  <option value="choiceTF">Phần II: Trắc nghiệm Đúng/Sai (\choiceTF)</option>
+                  <option value="shortans">Phần III: Trả lời ngắn (\shortans)</option>
+                </select>
+              </div>
+              <div>
+                <label for="extest-idtag" class="block text-xs font-bold text-slate-700 mb-1">Mã ID Ma trận (VD: 2D1H1-1)</label>
+                <input id="extest-idtag" type="text" value="2D1H1-1" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono" />
+              </div>
+            </div>
+
+            <div>
+              <label for="extest-stem" class="block text-xs font-bold text-slate-700 mb-1">Nội dung dẫn đề câu hỏi (hỗ trợ $...$)</label>
+              <textarea id="extest-stem" rows="2" class="w-full p-2.5 rounded-xl border border-slate-300 text-xs">Cho hàm số $y = x^3 - 3x + 2$. Điểm cực đại của đồ thị hàm số có tọa độ là</textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label for="extest-opt-a" class="block text-xs font-semibold text-slate-600 mb-1">Phương án A / Mệnh đề a)</label>
+                <input id="extest-opt-a" type="text" value="$(-1; 4)$" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs" />
+              </div>
+              <div>
+                <label for="extest-opt-b" class="block text-xs font-semibold text-slate-600 mb-1">Phương án B / Mệnh đề b)</label>
+                <input id="extest-opt-b" type="text" value="$(1; 0)$" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs" />
+              </div>
+              <div>
+                <label for="extest-opt-c" class="block text-xs font-semibold text-slate-600 mb-1">Phương án C / Mệnh đề c)</label>
+                <input id="extest-opt-c" type="text" value="$(-1; 0)$" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs" />
+              </div>
+              <div>
+                <label for="extest-opt-d" class="block text-xs font-semibold text-slate-600 mb-1">Phương án D / Mệnh đề d)</label>
+                <input id="extest-opt-d" type="text" value="$(1; 4)$" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="extest-correct" class="block text-xs font-bold text-slate-700 mb-1">Đáp án đúng (Phần I)</label>
+                <select id="extest-correct" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+                  <option value="A">Phương án A (\True)</option>
+                  <option value="B">Phương án B (\True)</option>
+                  <option value="C">Phương án C (\True)</option>
+                  <option value="D">Phương án D (\True)</option>
+                </select>
+              </div>
+              <div>
+                <label for="extest-short-val" class="block text-xs font-bold text-slate-700 mb-1">Đáp số Phần III (\shortans)</label>
+                <input id="extest-short-val" type="text" value="4" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+              </div>
+            </div>
+
+            <div>
+              <label for="extest-solution" class="block text-xs font-bold text-slate-700 mb-1">Lời giải chi tiết (\loigiai)</label>
+              <textarea id="extest-solution" rows="2" class="w-full p-2.5 rounded-xl border border-slate-300 text-xs">Ta có $y' = 3x^2 - 3 = 0 \Leftrightarrow x = \pm 1$. Bảng biến thiên suy ra điểm cực đại là $(-1; 4)$.</textarea>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="btn-generate-extest" class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition">
+                ⚡ Sinh mã ex_test
+              </button>
+              <button type="button" id="btn-shuffle-extest" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition">
+                🔀 Trộn phương án & Chuẩn hóa \dfrac
+              </button>
+            </div>
+          </div>
+
+          <!-- Cột xuất mã nguồn & Mẫu template LaTeX / LuaLaTeX -->
+          <div class="lg:col-span-6 math-card p-6 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <h3 class="text-base font-extrabold text-slate-900">Mã nguồn LaTeX / LuaLaTeX Đầu ra</h3>
+                <button type="button" id="btn-copy-extest" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition">
+                  📋 Sao chép mã nguồn
+                </button>
+              </div>
+
+              <!-- Các nút nạp mẫu nhanh -->
+              <div class="flex flex-wrap gap-1.5 mb-3">
+                <span class="text-xs text-slate-500 self-center mr-1">Mẫu chuẩn:</span>
+                <button type="button" data-latex-template="phan1-choice" class="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-blue-50 text-slate-700 text-xs font-semibold">Mẫu Phần I (\choice)</button>
+                <button type="button" data-latex-template="phan2-choicetf" class="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-blue-50 text-slate-700 text-xs font-semibold">Mẫu Phần II (\choiceTF)</button>
+                <button type="button" data-latex-template="phan3-shortans" class="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-blue-50 text-slate-700 text-xs font-semibold">Mẫu Phần III (\shortans)</button>
+                <button type="button" data-latex-template="tkz-tab-bbt" class="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-blue-50 text-slate-700 text-xs font-semibold">Bảng biến thiên tkz-tab</button>
+              </div>
+
+              <textarea id="extest-output-code" rows="13" class="w-full p-4 code-editor focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+
+            <!-- Hướng dẫn biên dịch nhanh với LuaLaTeX -->
+            <div class="p-4 rounded-xl bg-blue-50/80 border border-blue-200 text-xs text-slate-700 space-y-1">
+              <div class="font-bold text-blue-900">💡 Hướng dẫn biên dịch LuaLaTeX tốc độ cao cho Giáo viên:</div>
+              <p>• Sử dụng lệnh <code>lualatex -synctex=1 -interaction=nonstopmode main.tex</code> để hỗ trợ trực tiếp font Unicode tiếng Việt và tính toán hàm số trong TikZ không bị tràn bộ nhớ (TeX capacity exceeded).</p>
+              <p>• Khai báo <code>\usepackage[loigiai]{ex_test}</code> khi in bản có đáp án và <code>\usepackage[dethi]{ex_test}</code> khi in đề phát cho học sinh.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         F. KHU VỰC CÔNG NGHỆ & AI (#cong-nghe) - GEMINI AI & EDTECH
+         ====================================================================== -->
+    <section id="cong-nghe" class="py-14 bg-white border-b border-slate-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Khu vực F • Chuyển đổi số Giáo dục</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Ứng dụng Công nghệ & Trí tuệ Nhân tạo (Gemini AI) trong Dạy Toán</h2>
+          <p class="text-sm text-slate-600 mt-1">Hướng dẫn khai thác Gemini AI để xây dựng bài toán thực tế, chuyển ảnh công thức sang LaTeX và các kinh nghiệm công nghệ cho giáo viên.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- 3 Thẻ hướng dẫn ứng dụng AI & EdTech -->
+          <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="math-card p-5">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">Gemini AI cho Giáo viên</span>
+              <h3 class="font-bold text-slate-900 text-base mt-2 mb-1.5">1. Thiết kế Bài toán Thực tế & Tối ưu</h3>
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                Sử dụng kỹ thuật Role-Prompting để yêu cầu Gemini xây dựng bài toán thực tiễn (lãi suất ngân hàng, tối ưu chi phí vận chuyển, mô hình tăng trưởng sinh học) bám sát yêu cầu cần đạt của chương trình 2018.
+              </p>
+              <button type="button" data-ai-prompt="de-thuc-te-12" class="text-xs font-bold text-blue-700 hover:underline">
+                Nạp Prompt tạo bài toán thực tế →
+              </button>
+            </div>
+
+            <div class="math-card p-5">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-cyan-100 text-cyan-800">OCR Toán học</span>
+              <h3 class="font-bold text-slate-900 text-base mt-2 mb-1.5">2. Chuyển Ảnh chụp Đề thi sang LaTeX</h3>
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                Tải ảnh chụp trang sách hoặc đề thi PDF lên Gemini kèm câu lệnh chuẩn hóa cấu trúc <code>ex_test</code>, giúp tiết kiệm 80% thời gian gõ lại công thức và tự động chuyển đổi sang môi trường <code>\choice</code>.
+              </p>
+              <button type="button" data-ai-prompt="anh-sang-latex" class="text-xs font-bold text-cyan-700 hover:underline">
+                Nạp Prompt chuyển ảnh sang ex_test →
+              </button>
+            </div>
+
+            <div class="math-card p-5">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Trợ giảng Cá nhân hóa</span>
+              <h3 class="font-bold text-slate-900 text-base mt-2 mb-1.5">3. Phát hiện Lỗi sai trong Lời giải</h3>
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                Hướng dẫn học sinh sử dụng AI như một người gợi mở phương pháp (Socratic tutoring) thay vì chép lời giải sẵn: phân tích điều kiện xác định, kiểm tra bước lấy nguyên hàm và xét dấu đạo hàm.
+              </p>
+              <button type="button" data-ai-prompt="kiem-tra-loi-giai" class="text-xs font-bold text-emerald-700 hover:underline">
+                Nạp Prompt kiểm tra lời giải →
+              </button>
+            </div>
+
+            <div class="math-card p-5">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Kinh nghiệm EdTech</span>
+              <h3 class="font-bold text-slate-900 text-base mt-2 mb-1.5">4. Triển khai Web Học liệu trên Cloudflare</h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Kinh nghiệm đóng gói website cá nhân giáo viên bằng HTML5/CSS3/JS thuần kết hợp <strong>Cloudflare Workers Static Assets</strong> và GitHub giúp tốc độ tải trang dưới 100ms, miễn phí duy trì và bảo mật SSL tự động.
+              </p>
+            </div>
+          </div>
+
+          <!-- Hộp thử nghiệm & sao chép Prompt Gemini -->
+          <div class="lg:col-span-5 math-card p-6 bg-slate-900 text-white flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-cyan-300">Thư viện Câu lệnh AI Mẫu</span>
+                <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-blue-300 hover:text-white underline">
+                  Mở Google Gemini ↗
+                </a>
+              </div>
+              <h3 class="text-base font-extrabold text-white mb-2">Khung Câu lệnh (Prompt) Chuẩn Sư phạm Toán</h3>
+              <p class="text-xs text-slate-300 mb-3">Nhấn vào các nút bên trái để nạp câu lệnh mẫu hoặc chỉnh sửa trực tiếp tại đây trước khi dán vào Gemini:</p>
+              <textarea id="ai-prompt-preview-box" rows="9" class="w-full p-3.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-100 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-cyan-400">Đóng vai giáo viên Toán THPT giàu kinh nghiệm chương trình GDPT 2018. Hãy thiết kế 02 bài toán thực tế về ứng dụng Đạo hàm để tối ưu hóa chi phí / lợi nhuận dành cho học sinh Lớp 12 kèm lời giải chi tiết bằng gói ex_test.</textarea>
+            </div>
+            <div class="text-[11px] text-slate-400 border-t border-slate-800 pt-3">
+              Mẹo: Luôn yêu cầu AI kiểm산 (verify) lại kết quả số học cuối cùng bằng đạo hàm hoặc thay số trực tiếp để đảm bảo độ chính xác 100%.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         QUẢN LÝ NỘI DUNG MỞ RỘNG (CMS FRONTEND & PHÂN TÁCH KIẾN TRÚC)
+         ====================================================================== -->
+    <section class="py-14 bg-slate-100 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Mục 5 • Kiến trúc Mở rộng & Quản trị Học liệu</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Bảng Điều khiển Cập nhật Nội dung Nhanh (Local CMS & JSON)</h2>
+            <p class="text-sm text-slate-600 mt-1">Thử nghiệm thêm tài liệu PDF mới, thay đổi thông tin Banner trang chủ hoặc thêm liên kết ứng dụng ngoài ngay trên trình duyệt.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" id="cms-export-json-btn" class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shadow-sm transition">
+              ⬇ Xuất dữ liệu JSON (mathedu-site-data.json)
+            </button>
+            <button type="button" id="cms-reset-default-btn" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold transition">
+              Khôi phục mặc định
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Form 1: Thêm Tài liệu PDF mới -->
+          <form id="cms-add-doc-form" class="math-card p-5 space-y-3">
+            <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-2">➕ Thêm Tài liệu PDF / Đề thi mới</h3>
+            <div>
+              <label for="cms-doc-title" class="block text-xs font-semibold text-slate-700 mb-1">Tiêu đề tài liệu *</label>
+              <input id="cms-doc-title" type="text" required placeholder="VD: Đề thi thử THPT 2026 - Đề số 02" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label for="cms-doc-grade" class="block text-xs font-semibold text-slate-700 mb-1">Lớp</label>
+                <select id="cms-doc-grade" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+                  <option value="12">Lớp 12</option>
+                  <option value="11">Lớp 11</option>
+                  <option value="10">Lớp 10</option>
+                </select>
+              </div>
+              <div>
+                <label for="cms-doc-category" class="block text-xs font-semibold text-slate-700 mb-1">Loại</label>
+                <select id="cms-doc-category" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+                  <option value="Đề thi">Đề thi</option>
+                  <option value="Đề kiểm tra">Đề kiểm tra</option>
+                  <option value="Tài liệu học tập">Tài liệu học tập</option>
+                  <option value="Đáp án & Hướng dẫn">Đáp án & Hướng dẫn</option>
+                </select>
+              </div>
+              <div>
+                <label for="cms-doc-level" class="block text-xs font-semibold text-slate-700 mb-1">Mức độ</label>
+                <select id="cms-doc-level" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+                  <option value="Cơ bản">Cơ bản</option>
+                  <option value="Thông hiểu">Thông hiểu</option>
+                  <option value="Vận dụng">Vận dụng</option>
+                  <option value="Vận dụng cao">Vận dụng cao</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label for="cms-doc-topic" class="block text-xs font-semibold text-slate-700 mb-1">Chủ đề Toán</label>
+                <input id="cms-doc-topic" type="text" placeholder="VD: Hàm số, Oxyz" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+              </div>
+              <div>
+                <label for="cms-doc-url" class="block text-xs font-semibold text-slate-700 mb-1">Đường dẫn file PDF</label>
+                <input id="cms-doc-url" type="text" value="assets/documents/de-thi-thu-tot-nghiep-thpt-2026-so-1.pdf" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-mono" />
+              </div>
+            </div>
+            <div>
+              <label for="cms-doc-summary" class="block text-xs font-semibold text-slate-700 mb-1">Tóm tắt nội dung</label>
+              <input id="cms-doc-summary" type="text" placeholder="Mô tả ngắn gọn cấu trúc đề hoặc tài liệu..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+            </div>
+            <div>
+              <label for="cms-doc-solution" class="block text-xs font-semibold text-slate-700 mb-1">Đáp án / Hướng dẫn giải tóm tắt</label>
+              <input id="cms-doc-solution" type="text" placeholder="Gợi ý giải các câu vận dụng cao..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+            </div>
+            <button type="submit" class="w-full py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition">
+              Lưu Tài liệu vào Thư viện
+            </button>
+          </form>
+
+          <!-- Form 2: Thay đổi Banner & Thông tin Trang chủ -->
+          <form id="cms-update-banner-form" class="math-card p-5 space-y-3 flex flex-col justify-between">
+            <div class="space-y-3">
+              <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-2">🎨 Thay đổi Banner & Thông tin Giáo viên</h3>
+              <div>
+                <label for="cms-banner-title" class="block text-xs font-semibold text-slate-700 mb-1">Tiêu đề chính trên Banner</label>
+                <input id="cms-banner-title" type="text" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+              </div>
+              <div>
+                <label for="cms-banner-subtitle" class="block text-xs font-semibold text-slate-700 mb-1">Mô tả phụ trên Banner</label>
+                <textarea id="cms-banner-subtitle" rows="3" class="w-full p-2.5 rounded-lg border border-slate-300 text-xs"></textarea>
+              </div>
+              <div>
+                <label for="cms-teacher-name" class="block text-xs font-semibold text-slate-700 mb-1">Họ tên & Học vị Giáo viên</label>
+                <input id="cms-teacher-name" type="text" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+              </div>
+            </div>
+            <button type="submit" class="w-full py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition">
+              Cập nhật ngay lên Giao diện
+            </button>
+          </form>
+
+          <!-- Form 3: Thêm Liên kết Ứng dụng ngoài & Bảng phân định kiến trúc -->
+          <div class="space-y-4">
+            <form id="cms-add-extlink-form" class="math-card p-5 space-y-2.5">
+              <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-2">🔗 Thêm Liên kết Ứng dụng Bên ngoài</h3>
+              <div class="grid grid-cols-2 gap-2">
+                <input id="cms-ext-name" type="text" required placeholder="Tên ứng dụng (VD: WolframAlpha)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+                <input id="cms-ext-cat" type="text" placeholder="Nhóm (VD: Tính toán)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+              </div>
+              <input id="cms-ext-url" type="url" required placeholder="https://www.wolframalpha.com" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-mono" />
+              <input id="cms-ext-desc" type="text" placeholder="Mô tả ngắn gọn công dụng..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs" />
+              <button type="submit" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold transition">
+                Thêm Liên kết Ứng dụng
+              </button>
+            </form>
+
+            <!-- Bảng phân biệt rõ chức năng Frontend vs Backend/Database -->
+            <div class="math-card p-4 bg-blue-950 text-white text-xs space-y-2">
+              <div class="font-bold text-cyan-300 uppercase tracking-wider">Kiến trúc Mở rộng Cloudflare</div>
+              <p class="text-blue-100 leading-relaxed">
+                • <strong>Chạy 100% ở Frontend (Đang hoạt động):</strong> Điều hướng Hash, vẽ đồ thị, tính toán, hiển thị KaTeX, tạo mã <code>ex_test</code>, tìm kiếm/lọc tài liệu, tải PDF tĩnh và lưu thử nghiệm qua <code>localStorage</code> + xuất <code>JSON</code>.
+              </p>
+              <p class="text-blue-100 leading-relaxed">
+                • <strong>Khi mở rộng lên Backend (Giai đoạn 2):</strong> Gắn kết <strong>Cloudflare D1</strong> (cơ sở dữ liệu SQL lưu bài viết/đề thi), <strong>Cloudflare R2</strong> (lưu trữ file PDF dung lượng lớn) và <strong>Cloudflare Access / Zero Trust</strong> (xác thực đăng nhập quản trị viên).
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         G. KHU VỰC LIÊN HỆ (#lien-he) - THÔNG TIN, BIỂU MẪU & KÊNH LIÊN LẠC
+         ====================================================================== -->
+    <section id="lien-he" class="py-14 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Thông tin liên hệ & Kênh liên lạc -->
+          <div class="lg:col-span-5 space-y-5">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Khu vực G • Kết nối Học thuật</span>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Thông tin Liên hệ & Trao đổi Chuyên môn</h2>
+              <p class="text-sm text-slate-600 mt-1">Mọi ý kiến đóng góp về đề thi, trao đổi chuyên đề Toán THPT, gói lệnh LaTeX hoặc hợp tác giáo dục xin vui lòng liên hệ:</p>
+            </div>
+
+            <div class="space-y-3">
+              <div class="math-card p-4 flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">✉️</div>
+                <div>
+                  <div class="text-xs text-slate-500">Hộp thư điện tử (Email)</div>
+                  <div id="contact-email-display" class="text-sm font-bold text-slate-900">khoa.nguyen.math@edu.vn</div>
+                </div>
+              </div>
+
+              <div class="math-card p-4 flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center shrink-0">📞</div>
+                <div>
+                  <div class="text-xs text-slate-500">Điện thoại / Zalo Chuyên môn</div>
+                  <div id="contact-phone-display" class="text-sm font-bold text-slate-900">0988 654 321</div>
+                </div>
+              </div>
+
+              <div class="math-card p-4 flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 font-bold flex items-center justify-center shrink-0">🏫</div>
+                <div>
+                  <div class="text-xs text-slate-500">Đơn vị công tác</div>
+                  <div id="contact-school-display" class="text-sm font-bold text-slate-900">Tổ Toán - Tin, Trường THPT Chuyên Lê Quý Đôn</div>
+                  <div id="contact-location-display" class="text-xs text-slate-500">Thành phố Bắc Ninh, Tỉnh Bắc Ninh</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Liên kết đến các kênh liên lạc -->
+            <div class="pt-2">
+              <div class="text-xs font-bold uppercase text-slate-500 mb-2.5">Kênh liên lạc & Cộng đồng trực tuyến:</div>
+              <div class="flex flex-wrap gap-2.5">
+                <a href="mailto:khoa.nguyen.math@edu.vn" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-blue-50 text-slate-800 hover:text-blue-700 text-xs font-semibold transition">
+                  Gửi Email Trực tiếp
+                </a>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-blue-50 text-slate-800 hover:text-blue-700 text-xs font-semibold transition">
+                  GitHub Kho mẫu LaTeX ↗
+                </a>
+                <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-blue-50 text-slate-800 hover:text-blue-700 text-xs font-semibold transition">
+                  Kênh Video Bài giảng ↗
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Biểu mẫu gửi ý kiến -->
+          <div class="lg:col-span-7 math-card p-6 sm:p-8">
+            <h3 class="text-lg font-extrabold text-slate-900 mb-1">Biểu mẫu Gửi Ý kiến & Câu hỏi Toán học</h3>
+            <p class="text-xs text-slate-500 mb-5">Gửi câu hỏi thảo luận bài tập, báo lỗi tài liệu hoặc đề xuất chuyên đề mới.</p>
+
+            <form id="contact-feedback-form" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="contact-sender-name" class="block text-xs font-bold text-slate-700 mb-1">Họ và tên của bạn *</label>
+                  <input id="contact-sender-name" type="text" required placeholder="Nhập họ và tên..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                </div>
+                <div>
+                  <label for="contact-sender-role" class="block text-xs font-bold text-slate-700 mb-1">Bạn là</label>
+                  <select id="contact-sender-role" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    <option value="Học sinh THPT">Học sinh THPT</option>
+                    <option value="Giáo viên Toán">Giáo viên Toán đồng nghiệp</option>
+                    <option value="Phụ huynh">Phụ huynh học sinh</option>
+                    <option value="Khác">Khách thăm trang</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="contact-sender-msg" class="block text-xs font-bold text-slate-700 mb-1">Nội dung câu hỏi hoặc ý kiến đóng góp *</label>
+                <textarea id="contact-sender-msg" rows="4" required placeholder="Nhập nội dung trao đổi (có thể viết công thức dạng y = x^3 - 3x + 1)..." class="w-full p-3.5 rounded-xl border border-slate-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+              </div>
+
+              <button type="submit" class="px-6 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm font-bold shadow-sm transition">
+                Gửi Ý kiến Đóng góp
+              </button>
+            </form>
+
+            <!-- Danh sách phản hồi vừa gửi trong phiên -->
+            <div id="contact-submitted-list" class="mt-5 space-y-2"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       CHÂN TRANG (FOOTER) - BẢN QUYỀN & ĐIỀU HƯỚNG NHANH
+       ======================================================================== -->
+  <footer class="bg-slate-950 text-slate-400 py-10 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-8 border-b border-slate-800/80">
+        <div class="md:col-span-5 space-y-2.5">
+          <div class="flex items-center gap-2.5 text-white font-extrabold text-base">
+            <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs">∫π</span>
+            <span id="footer-site-name">MathEdu Studio</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed max-w-sm">
+            Chuyên trang học tập, chia sẻ đề thi Toán THPT, công cụ vẽ đồ thị, mã nguồn LaTeX <code>ex_test</code> và ứng dụng AI trong giáo dục. Tương thích hoàn toàn với Cloudflare Workers Static Assets.
+          </p>
+        </div>
+
+        <div class="md:col-span-4 space-y-2">
+          <div class="text-xs font-bold uppercase tracking-wider text-white">Điều hướng Khu vực (URL Hash)</div>
+          <div class="grid grid-cols-2 gap-1.5 text-xs">
+            <a href="#trang-chu" class="hover:text-white transition">#trang-chu</a>
+            <a href="#gioi-thieu" class="hover:text-white transition">#gioi-thieu</a>
+            <a href="#toan-hoc" class="hover:text-white transition">#toan-hoc</a>
+            <a href="#tai-lieu" class="hover:text-white transition">#tai-lieu</a>
+            <a href="#cong-cu" class="hover:text-white transition">#cong-cu</a>
+            <a href="#latex" class="hover:text-white transition">#latex</a>
+            <a href="#cong-nghe" class="hover:text-white transition">#cong-nghe</a>
+            <a href="#lien-he" class="hover:text-white transition">#lien-he</a>
+          </div>
+        </div>
+
+        <div class="md:col-span-3 space-y-2 text-xs">
+          <div class="font-bold uppercase tracking-wider text-white">Thông tin Bản quyền</div>
+          <p>Phát triển bởi: <strong id="footer-teacher-name" class="text-slate-200">Thầy Nguyễn Minh Khoa, ThS.</strong></p>
+          <p>Nền tảng: HTML5 • CSS3 • JS • KaTeX • Cloudflare Workers</p>
+        </div>
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+        <div>© 2026 MathEdu Studio. Bản quyền nội dung và thiết kế độc lập phục vụ cộng đồng Giáo viên & Học sinh THPT.</div>
+        <a href="#trang-chu" class="text-blue-400 hover:text-blue-300 font-semibold">↑ Lên đầu trang</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Nút nổi quay về đầu trang (Back to Top) -->
+  <button type="button" id="back-to-top-button" aria-label="Quay về đầu trang" class="back-to-top-btn w-11 h-11 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-lg flex items-center justify-center font-bold text-lg">
+    ↑
+  </button>
+
+  <!-- Modal hiển thị Chi tiết Chuyên đề & Đáp án Đề thi -->
+  <div id="universal-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-fade-in">
+      <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-3">
+        <h3 id="modal-title" class="font-extrabold text-slate-900 text-base sm:text-lg">Chi tiết nội dung</h3>
+        <button type="button" id="modal-close-btn" class="w-8 h-8 rounded-lg bg-slate-200/70 hover:bg-slate-300 text-slate-700 font-bold text-sm flex items-center justify-center transition">
+          ✕
+        </button>
+      </div>
+      <div id="modal-body" class="p-6 overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <!-- Script chính của ứng dụng -->
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
